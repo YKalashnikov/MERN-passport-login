@@ -1,10 +1,11 @@
 {
-  "name": "passport-auth",
+  "name": "mern",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "build": "netlify deploy"
   },
   "author": "Iurii Kalashnikov",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.16.2",
     "mongoose": "^5.6.7",
+    "netlify-cli": "^2.12.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
   },
