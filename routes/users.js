@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const Secret = require("../models/Secret");
 const bcrypt = require("bcryptjs");
-const passport = require("passport")
+const passport = require("passport");
 
 router.get("/login", (req, res) => {
   res.render("login");
@@ -43,23 +44,23 @@ router.post("/register", (req, res) => {
           password,
           password2
         });
-        
-         bcrypt.genSalt(10, (err, salt)=>{
-             bcrypt.hash(user.password, salt, (err, hash)=> {
-                 if(err) throw err;
-                 user.password = hash;
-                 user.save()
-                 .then(user => {
-                    req.flash(
-                        'success_msg',
-                        'You are now registered and can log in'
-                      );
-                    res.redirect('/users/login')
-                 })
-                 .catch(err => console.log(err))
 
-             })
-         })
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(user.password, salt, (err, hash) => {
+            if (err) throw err;
+            user.password = hash;
+            user
+              .save()
+              .then(user => {
+                req.flash(
+                  "success_msg",
+                  "You are now registered and can log in"
+                );
+                res.redirect("/users/login");
+              })
+              .catch(err => console.log(err));
+          });
+        });
 
         console.log(hashedPassword);
         res.send({ user: email });
@@ -67,17 +68,36 @@ router.post("/register", (req, res) => {
     });
   }
 });
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/users/login',
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/users/login",
     failureFlash: true
   })(req, res, next);
 });
 
-router.get('/logout', (req, res) => {
+router.get("/logout", (req, res) => {
   req.logout();
-  req.flash('success_msg', 'You are logged out');
-  res.redirect('/users/login');
-})
+  req.flash("success_msg", "You are logged out");
+  res.redirect("/users/login");
+});
+
+router.post("/message", async (req, res) => {
+  const { textSecret } = req.body;
+  /* let secretErrors = [];
+  if (!textSecret) {
+    secretErrors.push({ msg: "Please say something" });
+    if (secretErrors.length > 0) {
+      res.render("dashboard", { secretErrors });
+    }
+  } else { */
+    const userText = new Secret({
+      textSecret
+    });
+    const savedText = await userText.save();
+    req.flash("success_msg", "Thank you for your message");
+    res.redirect("/dashboard");
+  
+});
+
 module.exports = router;

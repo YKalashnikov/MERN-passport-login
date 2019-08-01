@@ -11,11 +11,13 @@ const passport = require('passport');
 require('./config/passport')(passport)
 
 mongoose
-  .connect(db, { useNewUrParser: true })
+  .connect(db, { useNewUrlParser: true })
   .then(() => console.log("Mongo is connected"))
   .catch(err => console.log(err));
 
+
 app.use(expressLayouts);
+app.use(express.static(__dirname + '/public'));
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));

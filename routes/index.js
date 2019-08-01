@@ -10,6 +10,7 @@ router.get('/dashboard', protected, (req, res) =>
   res.render('dashboard', {
     name: req.user.name
   })
+
 );
 
 module.exports = router;
